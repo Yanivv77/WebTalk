@@ -1,3 +1,4 @@
+"use client"
 import { type Message as TMessage } from "ai/react"
 import { Message } from "./Message"
 import { MessageSquare } from "lucide-react"
