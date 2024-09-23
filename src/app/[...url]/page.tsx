@@ -1,6 +1,7 @@
 import Chat from "@/components/Chat";
 import { ragChat } from "@/lib/rag-chat";
 import { redis } from "@/lib/redis";
+import { cookies } from "next/headers";
 
 interface PageProps {
   params: {
@@ -15,10 +16,17 @@ function reconstructUrl({url}:{url: string[]}) {
 
 const Page = async ({ params }: PageProps) => {
 
+  const sessionCookie = cookies().get("sessionId")?.value
   const reconstructedUrl = reconstructUrl({ url: params.url as string[] })
+
+  const sessionId = (reconstructedUrl + "--" + sessionCookie).replace(/\//g, "")
+
+
   const isAReadyIndexed = await redis.sismember("indexed",reconstructedUrl)
 
-  const sessionId = "moke-session"
+  const initialMessage = await ragChat.history.getMessages({amount:10,sessionId})
+
+  
 
   if(!isAReadyIndexed){
     await ragChat.context.add({
@@ -30,7 +38,7 @@ const Page = async ({ params }: PageProps) => {
     await redis.sadd("indexed",reconstructedUrl)
   }
 
-  return <Chat sessionId={sessionId}/>
+  return <Chat sessionId={sessionId} initialMessages={initialMessage} reconstructedUrl={reconstructedUrl}/>
 };
 
 export default Page;

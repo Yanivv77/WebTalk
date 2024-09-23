@@ -1,4 +1,4 @@
-"use client"
+
 
 import { cn } from "@/lib/utils";
 import { Bot, User } from "lucide-react";
@@ -12,7 +12,7 @@ export const Message = ({ content, isUserMessage }: MessageProps) => {
   return (
     <div
       className={cn({
-        "bg-zinc-800": isUserMessage,
+        "bg-black-900/25": isUserMessage,
         "bg-blue-900/25": !isUserMessage,
       })}
     >
